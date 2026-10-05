@@ -1,0 +1,101 @@
+{
+  "info": {
+    "name": "API Integration Hub",
+    "description": "Local demo collection for the appointment integration API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "appointmentId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Root",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/"
+      }
+    },
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Create Appointment",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  pm.collectionVariables.set('appointmentId', pm.response.json().id);",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patient_name\": \"Ava Chen\",\n  \"patient_id\": \"P-1001\",\n  \"doctor_name\": \"Dr. Rivera\",\n  \"appointment_date\": \"2026-10-15\",\n  \"appointment_time\": \"09:30\",\n  \"status\": \"scheduled\"\n}"
+        },
+        "url": "{{baseUrl}}/appointments"
+      }
+    },
+    {
+      "name": "Get Appointment",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/appointments/{{appointmentId}}"
+      }
+    },
+    {
+      "name": "Update Appointment",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"confirmed\",\n  \"appointment_time\": \"11:00\"\n}"
+        },
+        "url": "{{baseUrl}}/appointments/{{appointmentId}}"
+      }
+    },
+    {
+      "name": "Sync Appointment",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/appointments/{{appointmentId}}/sync"
+      }
+    },
+    {
+      "name": "Delete Appointment",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/appointments/{{appointmentId}}"
+      }
+    }
+  ]
+}
